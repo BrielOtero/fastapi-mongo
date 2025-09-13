@@ -1,0 +1,20 @@
+meta {
+  name: /basic-auth/login
+  type: http
+  seq: 5
+}
+
+post {
+  url: http://127.0.0.1:8000/basic-auth/login
+  body: formUrlEncoded
+  auth: basic
+}
+
+body:form-urlencoded {
+  username: gabriel
+  password: 123456
+}
+
+settings {
+  encodeUrl: true
+}
