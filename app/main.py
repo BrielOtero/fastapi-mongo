@@ -2,13 +2,13 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 import os
 
-from app.routers import basic_auth_users, products, users
+from app.routers import jwt_auth_users, products, users
 
 app = FastAPI()
 
 # Routers
 app.include_router(users.router)
-app.include_router(basic_auth_users.router)
+app.include_router(jwt_auth_users.router)
 app.include_router(products.router)
 
 # Add static files

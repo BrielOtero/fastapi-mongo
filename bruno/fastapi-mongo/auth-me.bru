@@ -1,0 +1,19 @@
+meta {
+  name: /auth/me
+  type: http
+  seq: 8
+}
+
+get {
+  url: http://127.0.0.1:8000/auth/me
+  body: formUrlEncoded
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImdhYnJpZWwiLCJleHAiOjE3NTc4NTE2Mjl9.RePRXA81aYQ9_DSE-yEqP6yU3vZSBPP6boL0G5KSAGY
+}
+
+settings {
+  encodeUrl: true
+}

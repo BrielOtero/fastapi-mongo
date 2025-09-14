@@ -6,6 +6,7 @@ users_list = [
         id=1,
         name="Gabriel",
         surname="Otero",
+        username="gabriel",
         email="email@email.com",
         age=28,
         disabled=False,
