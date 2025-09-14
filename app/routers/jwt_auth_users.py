@@ -3,7 +3,7 @@ from datetime import datetime, timedelta, timezone
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from pydantic import BaseModel
-from app.models.user import User
+from app.models.user import UserModel
 from passlib.context import CryptContext
 from typing import Any
 import jwt
@@ -29,13 +29,13 @@ class TokenData(BaseModel):
     username: str
 
 
-class UserDB(User):
+class UserDB(UserModel):
     password: str
 
 
 users_db: dict[str, UserDB] = {
     "gabriel": UserDB(
-        id=1,
+        _id="1",
         name="gabriel",
         surname="otero",
         username="gabriel",
@@ -45,7 +45,7 @@ users_db: dict[str, UserDB] = {
         password="$2a$12$tSWQO79a6Ky3OHkQAxELpubUpL4fIY7APJ2nrib2Gl0o7HShSMSdm",
     ),
     "gabriel2": UserDB(
-        id=2,
+        _id="2",
         name="gabriel2",
         surname="otero2",
         username="gabriel2",
@@ -71,7 +71,7 @@ def get_user_db(username: str) -> UserDB | None:
     return None
 
 
-async def authenticate_user(token: str = Depends(oauth2_scheme)) -> User:
+async def authenticate_user(token: str = Depends(oauth2_scheme)) -> UserModel:
     """Authenticate a user based on a JWT token."""
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -131,8 +131,8 @@ def create_access_token(
 
 
 async def get_current_active_user(
-    current_user: User = Depends(authenticate_user),
-) -> User:
+    current_user: UserModel = Depends(authenticate_user),
+) -> UserModel:
     """Get the current active user, raising an exception if the user is disabled."""
     if current_user.disabled:
         logging.warning(f"Attempt to access disabled user: {current_user.username}")
@@ -171,8 +171,10 @@ async def login(form: OAuth2PasswordRequestForm = Depends()) -> Token:
     return Token(access_token=access_token, token_type="bearer")
 
 
-@router.get("/me", response_model=User)
-async def read_users_me(current_user: User = Depends(get_current_active_user)) -> User:
+@router.get("/me", response_model=UserModel)
+async def read_users_me(
+    current_user: UserModel = Depends(get_current_active_user),
+) -> UserModel:
     """Return the current authenticated user's information."""
     logging.info(f"User info requested for: {current_user.username}")
     return current_user

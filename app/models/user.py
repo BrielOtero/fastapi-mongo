@@ -1,11 +1,11 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
-class User(BaseModel):
-    id: int
-    name: str
-    surname: str
-    username: str
-    email: str
-    age: int
-    disabled: bool
+class UserModel(BaseModel):
+    id: str | None = Field(alias="_id", default=None)
+    name: str = Field(...)
+    surname: str = Field(...)
+    username: str = Field(...)
+    email: str = Field(...)
+    age: int = Field(...)
+    disabled: bool = Field(...)

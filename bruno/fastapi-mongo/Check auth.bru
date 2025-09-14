@@ -1,0 +1,19 @@
+meta {
+  name: Check auth
+  type: http
+  seq: 7
+}
+
+get {
+  url: http://127.0.0.1:8000/auth/me
+  body: formUrlEncoded
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImdhYnJpZWwiLCJleHAiOjE3NTc4NTIzNDF9.JmYVkvRga5RxhKIwDtEm3Hbl7A6wODWxPmPxHbKnRdc
+}
+
+settings {
+  encodeUrl: true
+}
