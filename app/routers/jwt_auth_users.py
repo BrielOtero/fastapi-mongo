@@ -80,14 +80,14 @@ async def authenticate_user(token: str = Depends(oauth2_scheme)) -> User:
     )
 
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])  # type: ignore
-        username: str = payload.get("username")
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        username = payload.get("username")
 
         if not username:
             logging.warning("Token missing subject")
             raise credentials_exception
 
-        token_data = TokenData(username=username)
+        token_data = TokenData(username=str(username))
 
     except ExpiredSignatureError:
         logging.warning("Token has expired")
@@ -112,7 +112,9 @@ async def authenticate_user(token: str = Depends(oauth2_scheme)) -> User:
     return user
 
 
-def create_access_token(data: dict[str, Any], expires_delta: timedelta | None = None):
+def create_access_token(
+    data: dict[str, Any], expires_delta: timedelta | None = None
+) -> str:
     """Create a JWT access token."""
     to_encode = data.copy()
 
@@ -124,8 +126,8 @@ def create_access_token(data: dict[str, Any], expires_delta: timedelta | None = 
         )
 
     to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)  # type: ignore
-    return encoded_jwt
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return str(encoded_jwt)
 
 
 async def get_current_active_user(

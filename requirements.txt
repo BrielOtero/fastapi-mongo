@@ -4,5 +4,7 @@ uvicorn==0.35.0
 python-multipart==0.0.20
 passlib==1.7.4
 PyJWT==2.10.1
-types-passlib==1.7.7.20250602
 bcrypt==4.3.0
+mypy==1.18.1
+types-passlib==1.7.7.20250602
+types-PyJWT      1.7.1
