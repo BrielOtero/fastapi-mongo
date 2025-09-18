@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from app.models.user import UserModel
+from app.models.user import User
 
 
 class UserCollection(BaseModel):
@@ -10,4 +10,4 @@ class UserCollection(BaseModel):
     This exists because providing a top-level array in a JSON response can be a [vulnerability](https://haacked.com/archive/2009/06/25/json-hijacking.aspx/)
     """
 
-    students: list[UserModel]
+    students: list[User]
