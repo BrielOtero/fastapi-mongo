@@ -11,8 +11,8 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
 
     # Database
-    MONGODB_URL: str = Field(default="mongodb://localhost:27017")
-    MONGODB_DB_NAME: str = "local"
+    MONGODB_URL: str = Field(default_factory=lambda: os.getenv("MONGODB_URL", ""))
+    MONGODB_DB_NAME: str = "auth_db"
 
     # Security Policies
     MIN_PASSWORD_LENGTH: int = 12
@@ -27,10 +27,14 @@ class Settings(BaseSettings):
         return timedelta(minutes=self.ACCESS_TOKEN_EXPIRE_MINUTES)
 
     def validate_secrets(self) -> None:
-        print("Validating secret settings...", self.SECRET_KEY)
         if not self.SECRET_KEY:
             raise RuntimeError("SECRET_KEY must be set in environment variables")
+
+    def validate_db(self) -> None:
+        if not self.MONGODB_URL:
+            raise RuntimeError("MONGODB_URL must be set in environment variables")
 
 
 settings = Settings()
 settings.validate_secrets()
+settings.validate_db()

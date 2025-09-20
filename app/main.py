@@ -1,4 +1,6 @@
 from contextlib import asynccontextmanager
+
+from mangum import Mangum
 from app.core.logger import logger
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
@@ -27,3 +29,6 @@ app.mount("/static", StaticFiles(directory=static_dir), name="static")
 @app.get("/")
 async def root():
     return {"message": "Hello root!"}
+
+
+handler = Mangum(app)

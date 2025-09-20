@@ -1,0 +1,17 @@
+{
+  "resource": "/{proxy+}",
+  "path": "/s3/list-objects",
+  "httpMethod": "GET",
+  "queryStringParameters": {
+    "prefix": "",
+    "bucket": "stella-rb4-logs"
+  },
+  "headers": {
+    "Host": "localhost"
+  },
+  "requestContext": {
+    "httpMethod": "GET",
+    "resourcePath": "/{proxy+}"
+  },
+  "isBase64Encoded": false
+}
