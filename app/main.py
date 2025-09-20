@@ -1,15 +1,23 @@
+from contextlib import asynccontextmanager
+from app.core.logger import logger
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 import os
 
-from app.routers import jwt_auth_users, products, users
+from app.routers import users
 
-app = FastAPI()
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    logger.info("Starting API")
+    yield
+    logger.info("Shutting down API")
+
+
+app = FastAPI(lifespan=lifespan)
 
 # Routers
 app.include_router(users.router)
-app.include_router(jwt_auth_users.router)
-app.include_router(products.router)
 
 # Add static files
 static_dir = os.path.join(os.path.dirname(__file__), "static")

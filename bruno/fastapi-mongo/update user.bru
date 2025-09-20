@@ -5,21 +5,25 @@ meta {
 }
 
 put {
-  url: http://127.0.0.1:8000/users
+  url: http://127.0.0.1:8000/users/68ce6f4adecd1f7161e09536
   body: json
-  auth: inherit
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJnYWJyaWVsQGVtYWlsLmNvbSIsImlhdCI6MTc1ODM2MDA4OSwiZXhwIjoxNzU4MzYxODg5fQ.6QWDw46PZKZNq22l5uQaDDmk1strM2xGLil-ljvioH8
 }
 
 body:json {
   {
-    "id": "68cc54813b4f6020a1acea64",
-    "name": "gabriel",
-    "surname": "otero",
-    "username": "gabriel1234",
-    "email": "gabriel1234@email.com",
-    "age": 28,
-    "disabled": false
-  }
+      "name": "gabriel",
+      "surname": "otero",
+      "username": "gabriel",
+      "email": "gabriel@email.com",
+      "age": 29,
+      "is_admin": true,
+      "disabled": false
+    }
 }
 
 settings {

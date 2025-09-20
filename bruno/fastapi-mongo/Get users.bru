@@ -7,7 +7,11 @@ meta {
 get {
   url: http://127.0.0.1:8000/users
   body: none
-  auth: inherit
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJnYWJyaWVsQGVtYWlsLmNvbSIsImlhdCI6MTc1ODM1OTkyMSwiZXhwIjoxNzU4MzYxNzIxfQ.wTHcMa2Gp8j9GSmTdIhjJ_JOzJ1ZV6fxvTi0pGlxxRk
 }
 
 settings {

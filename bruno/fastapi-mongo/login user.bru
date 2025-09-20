@@ -5,14 +5,14 @@ meta {
 }
 
 post {
-  url: http://127.0.0.1:8000/auth/login
+  url: http://127.0.0.1:8000/users/login
   body: formUrlEncoded
   auth: basic
 }
 
 body:form-urlencoded {
-  username: gabriel
-  password: 123456
+  email: gabriel@email.com
+  password: A1234567891011
 }
 
 settings {

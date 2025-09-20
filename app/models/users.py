@@ -1,9 +1,8 @@
 from pydantic import BaseModel, EmailStr, Field, field_validator
 from app.core.config import settings
-from app.models.user import User
 
 
-class UserDBBase(BaseModel):
+class UserBase(BaseModel):
     name: str = Field(min_length=2, max_length=50)
     surname: str = Field(min_length=2, max_length=50)
     username: str = Field(min_length=3, max_length=20, pattern=r"^[a-zA-Z0-9_]+$")
@@ -13,7 +12,14 @@ class UserDBBase(BaseModel):
     disabled: bool = False
 
 
-class UserDBCreate(User):
+class User(UserBase):
+    id: str | None
+
+    class Config:
+        from_attributes = True
+
+
+class UserDBCreate(UserBase):
     password: str = Field(min_length=settings.MIN_PASSWORD_LENGTH)
 
     @field_validator("password")
@@ -28,7 +34,7 @@ class UserDBCreate(User):
         return v
 
 
-class UserDB(UserDBBase):
+class UserDB(UserBase):
     id: str
     password: str
 

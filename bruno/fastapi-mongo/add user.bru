@@ -5,7 +5,7 @@ meta {
 }
 
 post {
-  url: http://127.0.0.1:8000/users
+  url: http://127.0.0.1:8000/users/register
   body: json
   auth: inherit
 }
@@ -17,7 +17,9 @@ body:json {
     "username":"gabriel",
     "email":"gabriel@email.com",
     "age":28,
-    "disabled":false
+    "is_admin":true,
+    "disabled":false,
+    "password":"A1234567891011"
   }
 }
 

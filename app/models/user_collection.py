@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from app.models.user import User
+from app.models.users import User
 
 
 class UserCollection(BaseModel):

@@ -31,11 +31,11 @@ class TokenPayload(BaseModel):
 class TokenData(BaseModel):
     """Validated token data for dependency injection"""
 
-    username: str = Field(
+    email: str = Field(
         description="User's unique email identifier", examples=["user@example.com"]
     )
 
     @classmethod
     def from_payload(cls, payload: TokenPayload) -> "TokenData":
         """Convert raw payload to validated token data"""
-        return cls(username=payload.sub)
+        return cls(email=payload.sub)
