@@ -34,7 +34,7 @@ async def register(user: UserDBCreate):
     "/login",
     response_model=Token,
 )
-def login(form_data: AuthForm = Depends()) -> Token:
+async def login(form_data: AuthForm = Depends()) -> Token:
     """Authenticate user and return access token"""
     return login_for_access_token(form_data)
 
@@ -44,7 +44,7 @@ def login(form_data: AuthForm = Depends()) -> Token:
     "/me",
     response_model=User,
 )
-def read_users_me(current_user: User = Depends(get_current_active_user)) -> User:
+async def read_users_me(current_user: User = Depends(get_current_active_user)) -> User:
     """Retrieve current authenticated user's profile"""
     return current_user
 
@@ -54,7 +54,7 @@ def read_users_me(current_user: User = Depends(get_current_active_user)) -> User
     "/",
     response_model=list[User],
 )
-def list_users(
+async def list_users(
     current_user: User = Depends(get_current_active_user),
 ) -> list[User]:
     return retrieve_users(current_user)
@@ -65,7 +65,7 @@ def list_users(
     "/{user_id}",
     response_model=User,
 )
-def get_user(
+async def get_user(
     user_id: str,
     current_user: User = Depends(get_current_active_user),
 ) -> User:
@@ -75,7 +75,7 @@ def get_user(
 
 # PUT /users/{user_id}
 @router.put("/{user_id}", response_model=User)
-def update_user_profile(
+async def update_user_profile(
     user_id: str,
     user_update: UserBase,
     current_user: User = Depends(get_current_active_user),
@@ -89,7 +89,7 @@ def update_user_profile(
     "/{user_id}",
     status_code=status.HTTP_204_NO_CONTENT,
 )
-def delete_user_account(
+async def delete_user_account(
     user_id: str,
     current_user: User = Depends(get_current_active_user),
 ) -> None:

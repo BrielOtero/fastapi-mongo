@@ -19,7 +19,7 @@ async def lifespan(app: FastAPI):
     logging.info("Shutting down API")
 
 
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(lifespan=lifespan, redirect_slashes=False)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -42,4 +42,4 @@ async def root():
     return {"message": "Hello root!"}
 
 
-handler = Mangum(app, lifespan="off")
+handler = Mangum(app, lifespan="auto")
