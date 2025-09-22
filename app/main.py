@@ -9,8 +9,8 @@ import os
 
 from app.routers import users
 
-logging.getLogger("mangum.lifespan").setLevel(logging.DEBUG)
-logging.getLogger("mangum.http").setLevel(logging.DEBUG)
+logging.getLogger("mangum.lifespan").setLevel(logging.INFO)
+logging.getLogger("mangum.http").setLevel(logging.INFO)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
