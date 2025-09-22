@@ -31,4 +31,4 @@ async def root():
     return {"message": "Hello root!"}
 
 
-handler = Mangum(app)
+handler = Mangum(app, lifespan="off")
