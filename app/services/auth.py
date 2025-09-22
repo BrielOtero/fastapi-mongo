@@ -1,4 +1,4 @@
-from app.core.logger import logger
+import logging
 from fastapi import HTTPException, status
 from app.models.users import User
 from app.schemas.auth_form import AuthForm
@@ -13,7 +13,7 @@ def authenticate_user(email: str, password: str) -> User:
     """Authenticate user and return user object"""
     user = get_user_db_by_email(email)
     if not user:
-        logger.warning(f"Login failed - user not found: {email}")
+        logging.warning(f"Login failed - user not found: {email}")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect email or password",
@@ -21,14 +21,14 @@ def authenticate_user(email: str, password: str) -> User:
         )
 
     if not verify_password(password, user.password):
-        logger.warning(f"Login failed - invalid password for user: {email}")
+        logging.warning(f"Login failed - invalid password for user: {email}")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect email or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-    logger.info(f"Successful authentication for user: {email}")
+    logging.info(f"Successful authentication for user: {email}")
     return User(**user.model_dump())
 
 

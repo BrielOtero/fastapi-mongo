@@ -1,22 +1,33 @@
 from contextlib import asynccontextmanager
+import logging
 
 from mangum import Mangum
-from app.core.logger import logger
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
 import os
 
 from app.routers import users
 
+logging.getLogger("mangum.lifespan").setLevel(logging.DEBUG)
+logging.getLogger("mangum.http").setLevel(logging.DEBUG)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    logger.info("Starting API")
+    logging.info("Starting API")
     yield
-    logger.info("Shutting down API")
+    logging.info("Shutting down API")
 
 
 app = FastAPI(lifespan=lifespan)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+    expose_headers=["Content-Disposition", "Content-Type", "Content-Length"],
+)
 
 # Routers
 app.include_router(users.router)

@@ -1,4 +1,4 @@
-from app.core.logger import logger
+import logging
 from typing import Any
 
 from bson import ObjectId
@@ -31,7 +31,7 @@ def get_users() -> list[User]:
 
         return [serialize_user(user) for user in users]
     except Exception as e:
-        logger.error(f"Database error during users retrieval: {e}")
+        logging.error(f"Database error during users retrieval: {e}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to retrieve users",
@@ -45,7 +45,7 @@ def get_user_db_by_email(email: str) -> UserDB | None:
             return serialize_user_db(user)
         return None
     except Exception as e:
-        logger.error(f"Database error during user retrieval: {e}")
+        logging.error(f"Database error during user retrieval: {e}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to retrieve user",
@@ -59,7 +59,7 @@ def get_user_by_email(email: str) -> User | None:
             return serialize_user(user)
         return None
     except Exception as e:
-        logger.error(f"Database error during user retrieval: {e}")
+        logging.error(f"Database error during user retrieval: {e}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to retrieve user",
@@ -73,7 +73,7 @@ def get_user_by_id(id: str) -> User | None:
             return serialize_user(user)
         return None
     except Exception as e:
-        logger.error(f"Database error during user retrieval: {e}")
+        logging.error(f"Database error during user retrieval: {e}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to retrieve user",
@@ -83,7 +83,7 @@ def get_user_by_id(id: str) -> User | None:
 def create_user(user_in: UserDBCreate) -> UserDB:
     """Create new user with secure password handling"""
     if get_user_db_by_email(user_in.email):
-        logger.warning(f"Registration attempt with existing email: {user_in.email}")
+        logging.warning(f"Registration attempt with existing email: {user_in.email}")
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail="Email already registered"
         )
@@ -94,7 +94,7 @@ def create_user(user_in: UserDBCreate) -> UserDB:
         password=get_password_hash(user_in.password),
     )
 
-    logger.info(f"Creating new user: {user_db_create}")
+    logging.info(f"Creating new user: {user_db_create}")
 
     try:
         result = users_collection.insert_one(
@@ -102,14 +102,14 @@ def create_user(user_in: UserDBCreate) -> UserDB:
         )
         created_user = users_collection.find_one({"_id": result.inserted_id})
     except Exception as e:
-        logger.error(f"Database error during user creation: {str(e)}", exc_info=True)
+        logging.error(f"Database error during user creation: {str(e)}", exc_info=True)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="User registration failed",
         ) from e
 
     if not created_user:
-        logger.critical("User created but not found in database")
+        logging.critical("User created but not found in database")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="User creation succeeded but retrieval failed",
@@ -122,7 +122,7 @@ def retrieve_user(user_id: str, current_user: User) -> User:
     """Get user when given ID, with security checks"""
     user = get_user_by_id(user_id)
     if not user:
-        logger.warning(f"User not found: {user_id}")
+        logging.warning(f"User not found: {user_id}")
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User not found",
@@ -131,7 +131,7 @@ def retrieve_user(user_id: str, current_user: User) -> User:
 
     # Security: Only admins or self can view
     if not current_user.is_admin and current_user.id != user.id:
-        logger.warning(
+        logging.warning(
             f"Unauthorized access attempt to user {user_id} by {current_user.id}"
         )
         raise HTTPException(
@@ -140,28 +140,28 @@ def retrieve_user(user_id: str, current_user: User) -> User:
             headers={"X-Error": "PERMISSION_DENIED"},
         )
 
-    logger.info(f"User profile accessed: {user.email}")
+    logging.info(f"User profile accessed: {user.email}")
     return user
 
 
 def retrieve_users(current_user: User) -> list[User]:
     """Retrieve all users (restricted to admin users)"""
     if not current_user.is_admin:
-        logger.warning(f"Unauthorized users list attempt by: {current_user.email}")
+        logging.warning(f"Unauthorized users list attempt by: {current_user.email}")
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Not authorized to list users",
             headers={"X-Error": "PERMISSION_DENIED"},
         )
 
-    logger.info(f"Users list accessed by admin: {current_user.email}")
+    logging.info(f"Users list accessed by admin: {current_user.email}")
     return get_users()
 
 
 def update_user(current_user: User, user_update: UserBase, user_id: str) -> User:
     # Security: Only admins or self can update
     if not current_user.is_admin and current_user.id != user_id:
-        logger.warning(
+        logging.warning(
             f"Unauthorized update attempt to user {user_id} by {current_user.id}"
         )
         raise HTTPException(
@@ -170,7 +170,7 @@ def update_user(current_user: User, user_update: UserBase, user_id: str) -> User
             headers={"X-Error": "PERMISSION_DENIED"},
         )
 
-    logger.info(f"User update initiated: {user_id}")
+    logging.info(f"User update initiated: {user_id}")
 
     updated = None
 
@@ -180,13 +180,13 @@ def update_user(current_user: User, user_update: UserBase, user_id: str) -> User
             {"$set": user_update.model_dump(exclude={"id"})},
         )
     except Exception as e:
-        logger.error(f"Database error during user update: {e}")
+        logging.error(f"Database error during user update: {e}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to update user",
         )
     if not updated:
-        logger.warning(f"User to update not found: {user_id}")
+        logging.warning(f"User to update not found: {user_id}")
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User not found for update",
@@ -199,7 +199,7 @@ def update_user(current_user: User, user_update: UserBase, user_id: str) -> User
 def delete_user(current_user: User, user_id: str):
     user_delete = get_user_by_id(user_id)
     if not user_delete:
-        logger.warning(f"User not found: {user_id}")
+        logging.warning(f"User not found: {user_id}")
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User not found",
@@ -208,7 +208,7 @@ def delete_user(current_user: User, user_id: str):
 
     # Security: Only admins or self can update
     if not current_user.is_admin and current_user.id != user_delete.id:
-        logger.warning(
+        logging.warning(
             f"Unauthorized delete attempt to user {user_delete.id} by {current_user.id}"
         )
         raise HTTPException(
@@ -217,7 +217,7 @@ def delete_user(current_user: User, user_id: str):
             headers={"X-Error": "PERMISSION_DENIED"},
         )
 
-    logger.info(f"User delete initiated: {user_delete.id}")
+    logging.info(f"User delete initiated: {user_delete.id}")
 
     deleted = None
 
@@ -226,13 +226,13 @@ def delete_user(current_user: User, user_id: str):
             {"_id": ObjectId(user_delete.id)}
         )
     except Exception as e:
-        logger.error(f"Database error during user update: {e}")
+        logging.error(f"Database error during user update: {e}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to delete user",
         )
     if not deleted:
-        logger.warning(f"User to delete not found: {user_delete.id}")
+        logging.warning(f"User to delete not found: {user_delete.id}")
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User not found for delete",

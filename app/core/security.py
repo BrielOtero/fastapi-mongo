@@ -1,3 +1,4 @@
+import logging
 from fastapi.security import OAuth2PasswordBearer
 from datetime import datetime, timedelta, timezone
 from typing import Any
@@ -6,7 +7,6 @@ from fastapi import HTTPException, status, Depends
 from app.core.config import settings
 from app.models.token import TokenData, TokenPayload
 from app.services.users import get_user_by_email
-from app.core.logger import logger
 from app.models.users import User
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/users/login")
@@ -44,7 +44,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)) -> TokenData:
             raise credentials_exception
         return TokenData(email=email)
     except (jwt.InvalidTokenError, jwt.ExpiredSignatureError) as e:
-        logger.error(f"Token validation error: {e}")
+        logging.error(f"Token validation error: {e}")
         raise credentials_exception
 
 
