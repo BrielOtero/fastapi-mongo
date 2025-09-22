@@ -13,6 +13,8 @@ try:
         serverSelectionTimeoutMS=5000,  # 5 second server selection timeout
         maxPoolSize=10,
         minPoolSize=0,
+        tls=True,
+        tlsAllowInvalidCertificates=False,
     )
     db = client.get_database(settings.MONGODB_DB_NAME)
     users_collection: Collection[dict[str, UserDB]] = db.get_collection("users")
