@@ -1,5 +1,6 @@
 from contextlib import asynccontextmanager
 import logging
+import sys
 
 from mangum import Mangum
 from fastapi import FastAPI
@@ -8,6 +9,15 @@ from fastapi.middleware.cors import CORSMiddleware
 import os
 
 from app.routers import users
+
+# Configure logging for Lambda environment
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s %(levelname)s %(name)s %(message)s',
+    handlers=[
+        logging.StreamHandler(sys.stdout)
+    ]
+)
 
 logging.getLogger("mangum.lifespan").setLevel(logging.INFO)
 logging.getLogger("mangum.http").setLevel(logging.INFO)
